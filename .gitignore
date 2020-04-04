@@ -1,0 +1,4 @@
+# Ignore packages inside node_modules folder
+/node_modules/*
+*.log
+/.vscode/*
