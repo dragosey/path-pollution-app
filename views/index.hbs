@@ -1,2 +1,87 @@
-<h1>{{ title }}</h1>
-<p>Welcome to {{ title }}</p>
+{{{ body }}}
+<div id="map"></div>
+<div class="card-group">
+        <div class="card text-white mb-3 temperature bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">Temperature</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h5>
+              <p class="text-white text-center">°C</p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 humidity bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">Humidity</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">%</p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 co bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">CO</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 no2 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">NO2</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm1 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM1</div>
+          <div class="card-body">
+                <h1 class="card-title text-center">--</h1>
+                <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm25 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM2.5</div>
+          <div class="card-body">
+               <h1 class="card-title text-center">--</h1>
+               <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm10 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM10</div>
+          <div class="card-body">
+                <h1 class="card-title text-center">--</h1>
+                <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+ <script>
+    var map = L.map('map').setView([44.439663, 26.096306], 13);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+    {{{ leaflet_points }}}
+    function onMarkerClick(e) {
+        var id = this.options.id;
+        $.ajax({
+          type: 'GET',
+          cache: false,
+          contentType: 'application/json',
+          datatype: "json",
+          url: '/api/getPointData?id='+id,
+              success: function (result) {
+                console.log("Here are the response in json format: " + result);
+                $('.temperature h1').html(result.temperature);
+                $('.humidity h1').html(result.humidity);
+                $('.co').removeClass('bg-not-set bg-success bg-warning bg-danger bg-terrible').addClass(result.color_co);
+                $('.co h1').html(result.co);
+                $('.no2').removeClass('bg-not-set bg-success bg-warning bg-danger bg-terrible').addClass(result.color_no2);
+                $('.no2 h1').html(result.no2);
+                $('.pm1').removeClass('bg-not-set bg-success bg-warning bg-danger bg-terrible').addClass(result.color_pm1);
+                $('.pm1 h1').html(result.pm1);
+                $('.pm25').removeClass('bg-not-set bg-success bg-warning bg-danger bg-terrible').addClass(result.color_pm25);
+                $('.pm25 h1').html(result.pm25);
+                $('.pm10').removeClass('bg-not-set bg-success bg-warning bg-danger bg-terrible').addClass(result.color_pm10);
+                $('.pm10 h1').html(result.pm10);
+              }
+          });
+    }
+ </script>
