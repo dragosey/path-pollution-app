@@ -123,5 +123,17 @@ ul ul a {
 
 #map {
   width: 100%;
-  height: 350px;
+  height: 72vh;
+}
+
+.bg-not-set {
+  background: #7386D5 !important;
+}
+
+.bg-terrible {
+  background: #563D7C !important;
+}
+
+.no-margin {
+  margin: 0 !important;
 }

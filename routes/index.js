@@ -5,9 +5,31 @@ var assert = require('assert');
 require('dotenv').config();
 var database_url = "mongodb+srv://"+process.env.MONGODB_USERNAME+":"+process.env.MONGODB_PASSWORD+"@pathpollution-owztr.azure.mongodb.net/test?retryWrites=true&w=majority"
 
+function getLatLongLeaflet(callback) {
+  var resultArray = new Array();
+  mongo.connect(database_url, {useUnifiedTopology: true}, function(err, client) {
+    assert.equal(null, err);
+    var db = client.db('pollution-app');
+    var cursor = db.collection('sensor-data').find().project({_id:1, latitude:1,longitude:1}); 
+    cursor.forEach(function(doc, err) {
+      assert.equal(null, err);
+      resultArray.push(doc);
+    }, function() {
+      client.close();
+      callback(resultArray);
+    });
+  });
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express',  });
+  getLatLongLeaflet( function(result) {
+    var leaflet_points = "";
+    result.forEach(function(value) {
+      leaflet_points += 'L.marker(['+value.latitude+','+value.longitude+'],{id:\''+value._id+'\'}).addTo(map).on("click", onMarkerClick);';
+    });
+    res.render('index', { title: 'Express', leaflet_points: leaflet_points });
+  });
 });
 
 router.post('/ttn', function(req, res, next) {

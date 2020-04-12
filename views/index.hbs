@@ -1,15 +1,87 @@
 {{{ body }}}
- <div id="map"></div>
-
+<div id="map"></div>
+<div class="card-group">
+        <div class="card text-white mb-3 temperature bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">Temperature</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h5>
+              <p class="text-white text-center">°C</p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 humidity bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">Humidity</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">%</p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 co bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">CO</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 no2 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">NO2</div>
+          <div class="card-body">
+              <h1 class="card-title text-center">--</h1>
+              <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm1 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM1</div>
+          <div class="card-body">
+                <h1 class="card-title text-center">--</h1>
+                <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm25 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM2.5</div>
+          <div class="card-body">
+               <h1 class="card-title text-center">--</h1>
+               <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+        <div class="card text-white mb-3 pm10 bg-not-set no-margin" style="max-width: 18rem;">
+          <div class="card-header text-center">PM10</div>
+          <div class="card-body">
+                <h1 class="card-title text-center">--</h1>
+                <p class="text-white text-center">ug/m<sup>3</sup></p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
  <script>
     var map = L.map('map').setView([44.439663, 26.096306], 13);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
-    L.marker([44.439663, 26.096306]).addTo(map).on('click', onMarkerClick);
-    L.marker([44.429663, 26.066306]).addTo(map).on('click', onMarkerClick);
-
+    {{{ leaflet_points }}}
     function onMarkerClick(e) {
-        console.log(this.getLatLng());
+        var id = this.options.id;
+        $.ajax({
+          type: 'GET',
+          cache: false,
+          contentType: 'application/json',
+          datatype: "json",
+          url: '/api/getPointData?id='+id,
+              success: function (result) {
+                console.log("Here are the response in json format: " + result);
+                $('.temperature h1').html(result.temperature);
+                $('.humidity h1').html(result.humidity);
+                $('.co').addClass(result.color_co).removeClass('bg-not-set');
+                $('.co h1').html(result.co);
+                $('.no2').addClass(result.color_no2).removeClass('bg-not-set');;
+                $('.no2 h1').html(result.no2);
+                $('.pm1').addClass(result.color_pm1).removeClass('bg-not-set');;
+                $('.pm1 h1').html(result.pm1);
+                $('.pm25').addClass(result.color_pm25).removeClass('bg-not-set');;
+                $('.pm25 h1').html(result.pm25);
+                $('.pm10').addClass(result.color_pm10).removeClass('bg-not-set');;
+                $('.pm10 h1').html(result.pm10);
+              }
+          });
     }
  </script>
